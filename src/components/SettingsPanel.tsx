@@ -18,7 +18,7 @@ type Props = {
 };
 
 export default function SettingsPanel({ compact = false, onAbout, show = 'all' }: Props) {
-  const { lang, setLang, fontStep, changeFont, isDark, setDark } = useApp();
+  const { lang, setLang, fontStep, changeFont, isDark, setDark, replayTour } = useApp();
   const s = compact ? small : regular;
   const muted = { backgroundColor: usePalette().redMuted };
   const iconSize = compact ? 22 : 26;
@@ -71,12 +71,18 @@ export default function SettingsPanel({ compact = false, onAbout, show = 'all' }
       </>
       )}
 
-      {/* About */}
+      {/* About + app tour */}
       {show !== 'settings' && (
+      <>
+      <Pressable style={[s.row, muted]} onPress={replayTour}>
+        <Text style={s.rowLabel}>App Tour</Text>
+        <ArrowRight size={iconSize} color={colors.gold} />
+      </Pressable>
       <Pressable style={[s.row, muted]} onPress={onAbout ?? (() => router.push('/about'))}>
         <Text style={s.rowLabel}>About the App</Text>
         <ArrowRight size={iconSize} color={colors.gold} />
       </Pressable>
+      </>
       )}
     </View>
   );
