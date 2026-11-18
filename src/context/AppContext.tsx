@@ -9,7 +9,16 @@ const FONT_MAX = 4;
 const STORAGE_KEY = 'app-settings-v1';
 
 // dark: null = follow the phone's setting, true/false = user's choice
-type Saved = { lang: Lang; fontStep: number; favourites: string[]; dark: boolean | null; order: string[] };
+// welcomed: the first-launch language choice is done; toured: the app tour has been seen
+type Saved = {
+  lang: Lang;
+  fontStep: number;
+  favourites: string[];
+  dark: boolean | null;
+  order: string[];
+  welcomed: boolean;
+  toured: boolean;
+};
 
 type AppState = Saved & {
   ready: boolean;
@@ -22,6 +31,9 @@ type AppState = Saved & {
   toggleFavourite: (id: string) => boolean;
   tidyFavourites: (validIds: string[]) => void;
   setOrder: (ids: string[]) => void; // the user's own prayer order (menu + Home)
+  chooseLanguage: (l: Lang) => void; // first launch: pick a language, then the tour starts
+  finishTour: () => void;
+  replayTour: () => void;            // "App Tour" in Settings
 };
 
 const AppContext = createContext<AppState | null>(null);
@@ -33,6 +45,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     favourites: DEFAULT_FAVOURITES,
     dark: null,
     order: [],
+    welcomed: false,
+    toured: false,
   });
   const systemDark = useColorScheme() === 'dark';
   const [ready, setReady] = useState(false);
@@ -89,9 +103,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const setOrder = useCallback((order: string[]) => setState(s => ({ ...s, order })), []);
 
+  const chooseLanguage = (lang: Lang) => setState(s => ({ ...s, lang, welcomed: true }));
+  const finishTour = () => setState(s => ({ ...s, toured: true }));
+  const replayTour = () => setState(s => ({ ...s, toured: false }));
+
   return (
     <AppContext.Provider
-      value={{ ...state, ready, isDark, setDark, setLang, changeFont, fontSize, isFavourite, toggleFavourite, tidyFavourites, setOrder }}
+      value={{ ...state, ready, isDark, setDark, setLang, changeFont, fontSize, isFavourite, toggleFavourite, tidyFavourites, setOrder, chooseLanguage, finishTour, replayTour }}
     >
       {children}
     </AppContext.Provider>

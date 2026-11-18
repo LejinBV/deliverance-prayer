@@ -13,6 +13,7 @@ import { RosaryProvider } from '../context/RosaryContext';
 import { ExtrasProvider } from '../context/ExtrasContext';
 import { MannaBackgroundProvider } from '../context/MannaBackgroundContext';
 import MenuDrawer from '../components/MenuDrawer';
+import Onboarding from '../components/onboarding/Onboarding';
 import { usePalette } from '../hooks/usePalette';
 
 SplashScreen.preventAutoHideAsync();
@@ -44,6 +45,7 @@ export default function RootLayout() {
       <MenuProvider>
         <AppStack />
         <MenuDrawer />
+        <Onboarding />
       </MenuProvider>
     </MannaBackgroundProvider>
     </ExtrasProvider>
